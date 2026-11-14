@@ -601,7 +601,7 @@ function iRender(){
   const wrongPick=I.solo?I.wrong:(state==="retry"?I.ans:null);
   I.canPick=state==="pick"||state==="retry";
   let fb="";
-  if(state==="wait")fb=`<div class="feedback wait">已經揀咗，等老師揭曉…</div>`;
+  if(state==="wait")fb=`<div class="feedback wait">已經揀咗。想改可以再揀，等老師揭曉…</div>`;
   else if(state==="done")fb=`<div class="feedback good pop">${(I.fix||I.wrong)?"答啱喇！做得好！":"答啱喇！"}</div>`;
   else if(state==="retry")fb=`<div class="feedback bad pop">${I.ans?"再答多次！":"答案揭曉咗，揀一次正確答案。"}</div>`;
   else if(I.solo&&I.wrong)fb=`<div class="feedback bad pop">再答多次！</div>`;
@@ -619,7 +619,8 @@ function iRender(){
   body.querySelector(".qtext").textContent=q.text;
   $("iSay").onclick=()=>say(promptOf(I.solo?I.soloQ:I.q));
   const pickA=v=>{
-    if(!I.canPick||v===wrongPick)return;
+    if((!I.canPick&&state!=="wait")||v===wrongPick)return;
+    if(state==="wait"&&v===I.ans)return;
     if(I.solo){if(v===correct){I.ans=v;sDing();say("答啱喇！")}else{I.wrong=v;sSoft();say("再答多次")}}
     else if(state==="retry"){if(v===correct){I.fix=v;sDing();say("答啱喇！")}else{sSoft();say("再答多次")}}
     else{I.ans=v;sPop();say(v==="o"?"啱":"唔啱")}
